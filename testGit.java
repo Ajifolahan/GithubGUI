@@ -19,6 +19,8 @@ public class testGit
         GitHubApiClient gitHubApiClient = new GitHubApiClient(username, token);
 
 
+        //I was using the code below to test if it worked
+
         // //create new repo
         // RequestParams requestParams = new RequestParams();
         // System.out.println("Please enter the name of the repo you would like to create");
@@ -57,22 +59,47 @@ public class testGit
         String gitInit = gitSubprocessClient.gitInit();
         String remoteAddOrigin = gitSubprocessClient.gitRemoteAdd("origin", url);
 
+        System.out.println("Would you like to create a branch and switch to it? (Yes)(No)");
+        String branch = scanner.nextLine();
 
+        if(branch.equalsIgnoreCase("yes"))
+        {
+            System.out.println("Please enter branch name:");
+            String branchName = scanner.nextLine();
+            String createBranch = gitSubprocessClient.createAndSwitchBranch(branchName);
+        }
+
+
+        boolean addFile = false;
         System.out.println("Would you like to add files to be committed? (yes)(no)");
         String check = scanner.nextLine();
         if (check.equalsIgnoreCase("yes")) 
         {
             String gitAddAll = gitSubprocessClient.gitAddAll();
+            addFile = true;
+        }
+        else if (check.equalsIgnoreCase("no")) 
+        {
+            addFile = false;
+        }
+        
+        boolean commitFile = false;
+
+        if(addFile)
+        {
+            System.out.println("Do you want to commit? True for yes False for no");
+            commitFile = scanner.nextBoolean();
+        }
+       
+        if(commitFile)
+        {
+            System.out.println("Please enter your commit message");
+            String commitMessage = scanner.nextLine();
+            String commit = gitSubprocessClient.gitCommit(commitMessage);
         }
 
-
-        String commitMessage = "Testing Commit Message";
-
-        String commit = gitSubprocessClient.gitCommit(commitMessage);
-
-        System.out.println(gitSubprocessClient.gitStatus());
-
         String push = gitSubprocessClient.gitPush("master");
+
 
 
         //close scanner
