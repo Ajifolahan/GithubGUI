@@ -46,23 +46,24 @@ public class testGit
 
     
 
+        System.out.println("Please enter the path where you want to create the repo: ");
+        String repoPath = scanner.nextLine();
 
-        String repoPath = "C:\\Users\\chris\\Documents\\Second Semester\\GitTest";
+        //This code below gets the current folder they are in, we could possibly use it I couldn't figure out how
+        //String currentFolder = System.getProperty("user.dir");
+
+
         GitSubprocessClient gitSubprocessClient = new GitSubprocessClient(repoPath);
         String gitInit = gitSubprocessClient.gitInit();
         String remoteAddOrigin = gitSubprocessClient.gitRemoteAdd("origin", url);
-        String status = gitSubprocessClient.gitStatus();
-        System.out.println("You made it here");
 
 
-        System.out.println();
-        System.out.println(status);
-
-        System.out.println();
-        System.out.println();
-
-
-        String gitAddAll = gitSubprocessClient.gitAddAll();
+        System.out.println("Would you like to add files to be committed? (yes)(no)");
+        String check = scanner.nextLine();
+        if (check.equalsIgnoreCase("yes")) 
+        {
+            String gitAddAll = gitSubprocessClient.gitAddAll();
+        }
 
 
         String commitMessage = "Testing Commit Message";
