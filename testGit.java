@@ -48,6 +48,7 @@ public class testGit
 
     
 
+        //This code asks user for the repo path and stores it
         System.out.println("Please enter the path where you want to create the repo: ");
         String repoPath = scanner.nextLine();
 
@@ -55,21 +56,29 @@ public class testGit
         //String currentFolder = System.getProperty("user.dir");
 
 
+        //This creates the repo locally
         GitSubprocessClient gitSubprocessClient = new GitSubprocessClient(repoPath);
         String gitInit = gitSubprocessClient.gitInit();
+        //This adds origin to gitHub
         String remoteAddOrigin = gitSubprocessClient.gitRemoteAdd("origin", url);
 
+
+
+        //Asking user if they want to create a branch
+        String branchName = "master";
         System.out.println("Would you like to create a branch and switch to it? (Yes)(No)");
         String branch = scanner.nextLine();
 
         if(branch.equalsIgnoreCase("yes"))
         {
             System.out.println("Please enter branch name:");
-            String branchName = scanner.nextLine();
+            branchName = scanner.nextLine();
             String createBranch = gitSubprocessClient.createAndSwitchBranch(branchName);
         }
 
 
+
+        //The following code adds ALL of the files changed within the folder
         boolean addFile = false;
         System.out.println("Would you like to add files to be committed? (yes)(no)");
         String check = scanner.nextLine();
@@ -83,14 +92,14 @@ public class testGit
             addFile = false;
         }
         
-        boolean commitFile = false;
 
+        //The following code commits the staged changes
+        boolean commitFile = false;
         if(addFile)
         {
             System.out.println("Do you want to commit? True for yes False for no");
             commitFile = scanner.nextBoolean();
         }
-       
         if(commitFile)
         {
             System.out.println("Please enter your commit message");
@@ -98,7 +107,38 @@ public class testGit
             String commit = gitSubprocessClient.gitCommit(commitMessage);
         }
 
-        String push = gitSubprocessClient.gitPush("master");
+
+        //Thise code asks if you want to see the status
+        System.out.println("Would you like to see the status? (yes)(no)");
+        String statusMessage = scanner.nextLine();
+        if (statusMessage.equalsIgnoreCase("yes"))
+        {
+            System.out.println(gitSubprocessClient.gitStatus());
+        }
+
+
+        //This code pushes the code to the branch you are on
+        System.out.println("Would you like to push your branch? (yes)(no)");
+        String pushStatus = scanner.nextLine();
+        if(pushStatus.equalsIgnoreCase("yes"))
+        {
+            String push = gitSubprocessClient.gitPush(branchName);
+        }
+
+
+        //This code pulls from master
+        System.out.println("Would to like to pull from master? (yes)(no)");
+        String pullStatus = scanner.nextLine();
+        if(pullStatus.equalsIgnoreCase("yes"))
+        {
+            String pull = gitSubprocessClient.gitPull("master");
+        }
+
+
+        //The if statements are only here for testing purposes
+        //We only need the Strings inside of them and everything with Git in it
+        //I didn't use all of the git commands yet only most of the basic ones
+        //I can easily add them if we need them
 
 
 
