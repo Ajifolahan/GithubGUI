@@ -184,6 +184,7 @@ public class start{
     }
     public static void chooseFile() {
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnvalue = jfc.showOpenDialog(null);
         if(returnvalue == JFileChooser.APPROVE_OPTION){
             File selectedFile = jfc.getSelectedFile();
