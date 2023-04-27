@@ -19,18 +19,22 @@ public class start{
         JFrame frame = new JFrame("Basic Frame");
         frame.setSize(1000,800);
         frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JFrame frame2 = new JFrame("Frame 2");
         frame2.setSize(1000,800);
         frame2.setResizable(false);
+        frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JFrame frame3 = new JFrame("Frame 3");
         frame3.setSize(1000,800);
         frame3.setResizable(false);
+        frame3.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JFrame frame4 = new JFrame("Frame 4");
         frame4.setSize(1000,800);
         frame4.setResizable(false);
+        frame4.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //Frame 1 (After Start Screen) Information
         JPanel panel = new JPanel();
