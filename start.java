@@ -26,7 +26,11 @@ public class start{
 
         JFrame frame3 = new JFrame("Frame 3");
         frame3.setSize(1000,800);
-        frame.setResizable(false);
+        frame3.setResizable(false);
+
+        JFrame frame4 = new JFrame("Frame 4");
+        frame4.setSize(1000,800);
+        frame4.setResizable(false);
 
         //Frame 1 (After Start Screen) Information
         JPanel panel = new JPanel();
@@ -90,10 +94,76 @@ public class start{
         panel3.setLayout(null);
         panel3.setBackground(Color.LIGHT_GRAY);
 
+        JLabel frame3Header = new JLabel("Repo Information");
+        frame3Header.setLocation(410,-30);
+        frame3Header.setSize(350,350);
+        panel3.add(frame3Header);
+
+        JLabel nameLabel = new JLabel("Repo Name: ");
+        nameLabel.setLocation(350,195);
+        nameLabel.setSize(300,100);
+        panel3.add(nameLabel);
+
+        JLabel descripLabel = new JLabel("Repo Description: ");
+        descripLabel.setLocation(320, 240);
+        descripLabel.setSize(200,100);
+        panel3.add(descripLabel);
+
+        JTextField nameField = new JTextField("Enter Name");
+        nameField.setLocation(430,220);
+        nameField.setSize(300,50);
+        panel3.add(nameField);
+
+        JTextField descripField = new JTextField("Enter Description");
+        descripField.setLocation(430,270);
+        descripField.setSize(300,50);
+        panel3.add(descripField);
+
+        JLabel privacyLabel = new JLabel("To Continue please select the privacy of your repo:");
+        privacyLabel.setSize(300,50);
+        privacyLabel.setLocation(330,550);
+        panel3.add(privacyLabel);
+
+        JButton privateButton = new JButton("Private");
+        privateButton.setSize(100,50);
+        privateButton.setLocation(340,600);
+        privateButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                Boolean privacy = true;
+                String repoName = nameField.getText();
+                String repoDescrip = descripField.getText();
+                frame3.setVisible(false);
+                frame4.setVisible(true);
+            }
+        });
+        panel3.add(privateButton);
+
+        JButton publicButton = new JButton("Public");
+        publicButton.setSize(100,50);
+        publicButton.setLocation(470,600);
+        publicButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                Boolean privacy = false;
+                String repoName = nameField.getText();
+                String repoDescrip = descripField.getText();
+                frame3.setVisible(false);
+                frame4.setVisible(true);
+            }
+        });
+        panel3.add(publicButton);
+
+        frame3.setContentPane(panel3);
+        frame3.setVisible(false);
+
+        //Frame 4
+        JPanel panel4 = new JPanel();
+        panel4.setLayout(null);
+        panel4.setBackground(Color.LIGHT_GRAY);
+
         JLabel filePickMessage = new JLabel("Please Select Where you want the repo to end up on your computer.");
         filePickMessage.setLocation(350,350);
         filePickMessage.setSize(350,350);
-        panel3.add(filePickMessage);
+        panel4.add(filePickMessage);
 
         JButton filePickButton = new JButton("Click me to Select the File");
         filePickButton.addActionListener(new ActionListener(){
@@ -103,11 +173,10 @@ public class start{
         });
         filePickButton.setSize(200,50);
         filePickButton.setLocation(350, 550);
-        panel3.add(filePickButton);
+        panel4.add(filePickButton);
 
-        frame3.setContentPane(panel3);
-        frame3.setVisible(false);
-        
+        frame4.setContentPane(panel4);
+        frame4.setVisible(false);
     }
     public static void chooseFile() {
         JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
