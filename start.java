@@ -1,8 +1,11 @@
-import java.awt.Color;
 import java.awt.event.*;
+import java.awt.image.ImageFilter;
+import java.awt.*;
 
 import java.io.File;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -192,22 +195,24 @@ public class start{
         }
     }
     public static void startScreen(JFrame nextFrame) {
-        JFrame startScreen = new JFrame("Frame for start screen");
+        JFrame startScreen = new JFrame("Start Screen");
         startScreen.setSize(1000,800);
         startScreen.setResizable(false);
+        startScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel startPanel = new JPanel();
         startPanel.setLayout(null);
-        startPanel.setBackground(Color.YELLOW);
+        startPanel.setBackground(Color.GRAY);
 
         JLabel welcomeMessage = new JLabel("Welcome to The GitHub Repo Creator!");
         welcomeMessage.setSize(300,200);
-        welcomeMessage.setLocation(350, 300);
+        welcomeMessage.setLocation(750, 300);
         startPanel.add(welcomeMessage);
 
         JButton nextButton = new JButton("Click here to advance!");
         nextButton.setSize(200,100);
-        nextButton.setLocation(350, 500);
+        nextButton.setLocation(750, 430);
+        nextButton.setBackground(Color.LIGHT_GRAY);
         nextButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 startScreen.setVisible(false);
@@ -215,6 +220,15 @@ public class start{
             }
         });
         startPanel.add(nextButton);
+
+        ImageIcon background = new ImageIcon("C:\\Users\\cheff\\Downloads\\School_Downloads\\CSC109\\Challenge2\\GithubGUI\\picture1.png");
+        Image img = background.getImage();
+        Image temp = img.getScaledInstance(1000,700,Image.SCALE_SMOOTH);
+        background = new ImageIcon(temp);
+        JLabel back = new JLabel(background);
+        back.setLayout(null);
+        back.setBounds(0, 0, 1000, 700);
+        startPanel.add(back);
 
         startScreen.setContentPane(startPanel);
         startScreen.setVisible(true);
