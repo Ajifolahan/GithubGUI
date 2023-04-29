@@ -42,7 +42,12 @@ public class start{
         //Frame 1 (After Start Screen) Information
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        panel.setBackground(Color.CYAN);
+        //panel.setBackground(Color.CYAN);
+
+        JLabel title1 = new JLabel("USERNAME");
+        title1.setLocation(420,300);
+        title1.setSize(200,50);
+        panel.add(title1);
 
         JTextField textField = new JTextField("Enter Your Username Here", 20);
         textField.setSize(200,50);
@@ -61,6 +66,15 @@ public class start{
         button.setSize(200,50);
         button.setLocation(350,550);
         panel.add(button);
+
+        ImageIcon background1 = new ImageIcon("C:\\Users\\cheff\\Downloads\\School_Downloads\\CSC109\\Challenge2\\GithubGUI\\cyberspace.jpg");
+        Image img1 = background1.getImage();
+        Image temp1 = img1.getScaledInstance(1000,800,Image.SCALE_SMOOTH);
+        background1 = new ImageIcon(temp1);
+        JLabel back1 = new JLabel(background1);
+        back1.setLayout(null);
+        back1.setBounds(0, 0, 1000, 800);
+        panel.add(back1);
 
         frame.setContentPane(panel);
         frame.setVisible(false);
