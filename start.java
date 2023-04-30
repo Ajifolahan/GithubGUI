@@ -1,23 +1,27 @@
 import java.awt.event.*;
-import java.awt.image.ImageFilter;
 import java.awt.*;
-
 import java.io.File;
-
-import javax.swing.Icon;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileSystemView;
+import git.tools.client.GitSubprocessClient;
+import github.tools.client.GitHubApiClient;
+import github.tools.client.RequestParams;
+import github.tools.responseObjects.CreateRepoResponse;
+import github.tools.responseObjects.GetRepoInfoResponse;
 
 public class start{
-    public static void main(String[] args){
-        System.out.println("Starting");
 
+    static Boolean privacy;
+
+    public static void main(String[] args){
         //Frame creation for multiple screens
         JFrame frame = new JFrame("Basic Frame");
         frame.setSize(1000,800);
@@ -42,14 +46,25 @@ public class start{
         //Frame 1 (After Start Screen) Information
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        //panel.setBackground(Color.CYAN);
+
+        JLabel pathLabel = new JLabel("Please enter the directory path of your project");
+        pathLabel.setLocation(320,150);
+        pathLabel.setSize(500,50);
+        pathLabel.setForeground(Color.ORANGE);
+        panel.add(pathLabel);
+
+        JTextField pathtextField = new JTextField();
+        pathtextField.setSize(200,50);
+        pathtextField.setLocation(350,200);
+        panel.add(pathtextField);
 
         JLabel title1 = new JLabel("USERNAME");
         title1.setLocation(420,300);
+        title1.setForeground(Color.ORANGE);
         title1.setSize(200,50);
         panel.add(title1);
 
-        JTextField textField = new JTextField("Enter Your Username Here", 20);
+        JTextField textField = new JTextField();
         textField.setSize(200,50);
         textField.setLocation(350,350);
         panel.add(textField);
@@ -57,8 +72,6 @@ public class start{
         JButton button = new JButton("Click here to advance!");
         button.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                String username = textField.getText();
-                System.out.println(username);
                 frame.setVisible(false);
                 frame2.setVisible(true);
             }
@@ -67,7 +80,7 @@ public class start{
         button.setLocation(350,550);
         panel.add(button);
 
-        ImageIcon background1 = new ImageIcon("C:\\Users\\cheff\\Downloads\\School_Downloads\\CSC109\\Challenge2\\GithubGUI\\cyberspace.jpg");
+        ImageIcon background1 = new ImageIcon("cyberspace.jpg");
         Image img1 = background1.getImage();
         Image temp1 = img1.getScaledInstance(1000,800,Image.SCALE_SMOOTH);
         background1 = new ImageIcon(temp1);
@@ -82,13 +95,17 @@ public class start{
         //Calls StartScreen
         startScreen(frame);
 
-
         //Frame 2 Information
         JPanel panel2 = new JPanel();
         panel2.setLayout(null);
-        //panel2.setBackground(Color.WHITE);
 
-        JTextField textField2 = new JTextField("Enter your password token here");
+        JLabel title2 = new JLabel("TOKEN");
+        title2.setLocation(420,300);
+        title2.setForeground(Color.ORANGE);
+        title2.setSize(200,50);
+        panel2.add(title2);
+
+        JTextField textField2 = new JTextField();
         textField2.setSize(200,50);
         textField2.setLocation(350,350);
         panel2.add(textField2);
@@ -96,8 +113,6 @@ public class start{
         JButton button2 = new JButton("Click here to advance!");
         button2.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                String token = textField2.getText();
-                System.out.println(token);
                 frame2.setVisible(false);
                 frame3.setVisible(true);
             }
@@ -106,7 +121,7 @@ public class start{
         button2.setLocation(350,550);
         panel2.add(button2);
 
-        ImageIcon background2 = new ImageIcon("C:\\Users\\cheff\\Downloads\\School_Downloads\\CSC109\\Challenge2\\GithubGUI\\cyberLock.jpg");
+        ImageIcon background2 = new ImageIcon("cyberLock.jpg");
         Image img2 = background2.getImage();
         Image temp2 = img2.getScaledInstance(1000,800,Image.SCALE_SMOOTH);
         background2 = new ImageIcon(temp2);
@@ -133,18 +148,19 @@ public class start{
         nameLabel.setLocation(400,225);
         nameLabel.setSize(300,100);
         panel3.add(nameLabel);
+        
 
         JLabel descripLabel = new JLabel("Repo Description: ");
         descripLabel.setLocation(370, 270);
         descripLabel.setSize(200,100);
         panel3.add(descripLabel);
 
-        JTextField nameField = new JTextField("Enter Name");
+        JTextField nameField = new JTextField();
         nameField.setLocation(480,250);
         nameField.setSize(300,50);
         panel3.add(nameField);
 
-        JTextField descripField = new JTextField("Enter Description");
+        JTextField descripField = new JTextField();
         descripField.setLocation(480,300);
         descripField.setSize(300,50);
         panel3.add(descripField);
@@ -159,11 +175,7 @@ public class start{
         privateButton.setLocation(420,600);
         privateButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                Boolean privacy = true;
-                String repoName = nameField.getText();
-                String repoDescrip = descripField.getText();
-                frame3.setVisible(false);
-                frame4.setVisible(true);
+                privacy = true;
             }
         });
         panel3.add(privateButton);
@@ -173,16 +185,18 @@ public class start{
         publicButton.setLocation(550,600);
         publicButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-                Boolean privacy = false;
-                String repoName = nameField.getText();
-                String repoDescrip = descripField.getText();
-                frame3.setVisible(false);
-                frame4.setVisible(true);
+                privacy = false;
             }
         });
         panel3.add(publicButton);
 
-        ImageIcon background3 = new ImageIcon("C:\\Users\\cheff\\Downloads\\School_Downloads\\CSC109\\Challenge2\\GithubGUI\\codeWheel.jpg");
+        JButton createRepoButton = new JButton("Click to create Repo");
+        createRepoButton.setSize(250,50);
+        createRepoButton.setLocation(400,680);
+        panel3.add(createRepoButton);
+
+
+        ImageIcon background3 = new ImageIcon("codeWheel.jpg");
         Image img3 = background3.getImage();
         Image temp3 = img3.getScaledInstance(1000,800,Image.SCALE_SMOOTH);
         background3 = new ImageIcon(temp3);
@@ -199,25 +213,26 @@ public class start{
         panel4.setLayout(null);
         panel4.setBackground(Color.LIGHT_GRAY);
 
-        JLabel filePickMessage = new JLabel("Please Select Where you want the repo to end up on your computer.");
-        filePickMessage.setForeground(Color.WHITE);
-        filePickMessage.setLocation(300,100);
-        filePickMessage.setSize(400,350);
-        panel4.add(filePickMessage);
+        JLabel update = new JLabel("Repo is being created!");
+        update.setForeground(Color.WHITE);
+        update.setLocation(300,100);
+        update.setSize(400,350);
+        panel4.add(update);
 
-        String fileLocation = "";
+        JLabel link = new JLabel("");
+        link.setForeground(Color.ORANGE);
+        link.setLocation(600,100);
+        link.setSize(400,350);
+        panel4.add(link);
 
-        JButton filePickButton = new JButton("Click me to Select the File");
-        filePickButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                chooseFile();
-            }
-        });
-        filePickButton.setSize(200,50);
-        filePickButton.setLocation(350, 350);
-        panel4.add(filePickButton);
+        JLabel error = new JLabel("");
+        error.setForeground(Color.ORANGE);
+        error.setLocation(400,300);
+        error.setSize(400,350);
+        panel4.add(error);
 
-        ImageIcon background4 = new ImageIcon("C:\\Users\\cheff\\Downloads\\School_Downloads\\CSC109\\Challenge2\\GithubGUI\\cyberglobe.jpg");
+
+        ImageIcon background4 = new ImageIcon("cyberglobe.jpg");
         Image img4 = background4.getImage();
         Image temp4 = img4.getScaledInstance(1000,800,Image.SCALE_SMOOTH);
         background4 = new ImageIcon(temp4);
@@ -228,20 +243,103 @@ public class start{
 
         frame4.setContentPane(panel4);
         frame4.setVisible(false);
+
+
+        createRepoButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame3.setVisible(false);
+                frame4.setVisible(true);
+                GitSubprocessClient gitSubprocessClient = new GitSubprocessClient(pathtextField.getText().replaceAll("\"", ""));
+			try{
+				String gitInit = gitSubprocessClient.gitInit();
+			} catch (RuntimeException runtimeException){
+				error.setText("Failed to Make the local git Repo");
+			}
+
+            // .gitignore file creation
+			File gitIgnore = new File(pathtextField.getText().replaceAll("\"", ""),".gitignore");
+			PrintWriter gitIgnorePW = null;
+			try{
+				gitIgnore.createNewFile();
+				gitIgnorePW = new PrintWriter(gitIgnore);
+
+				gitIgnorePW.println(".project");
+				gitIgnorePW.println(".classpath");
+				gitIgnorePW.println("*.class");
+				gitIgnorePW.println("bin/");
+				gitIgnorePW.println(".settings/");
+				gitIgnorePW.println(".idea/");
+				gitIgnorePW.println("*.iml");
+				gitIgnorePW.println(".DS_Store");
+				gitIgnorePW.println("out/");
+				gitIgnorePW.flush();
+
+			} catch(IOException e1){
+				error.setText("Failed to Make the gitIgnore File");
+            } finally {
+				gitIgnorePW.close();
+			}
+
+           // README.md file creation
+			File readme = new File(pathtextField.getText().replaceAll("\"", ""),"README.md");
+			PrintWriter readmePW = null;
+			String projectName = nameField.getText();
+			try{
+				readme.createNewFile();
+				readmePW = new PrintWriter(readme);
+
+				readmePW.println("## " + projectName);
+				readmePW.flush();
+
+			} catch(IOException e1){
+				error.setText("Failed to Make the ReadMe File");
+			} finally {
+				readmePW.close();
+			}
+
+			//initial commit
+			String addAll = gitSubprocessClient.gitAddAll();
+			String commitMessage = "initial commit";
+			String commit = gitSubprocessClient.gitCommit(commitMessage);
+
+
+			GitHubApiClient gitHubApiClient = new GitHubApiClient(textField.getText(),textField2.getText());
+			RequestParams createRepoRequestParams = new RequestParams();
+			createRepoRequestParams.addParam("name",nameField.getText());
+			if(!descripField.getText().equals("")){
+				createRepoRequestParams.addParam("description",descripField.getText());
+                createRepoRequestParams.addParam("private",privacy);
+			} else {
+                error.setText("Error in creating Github repo. Description not entered");
+            }
+			CreateRepoResponse createRepoResponse = gitHubApiClient.createRepo(createRepoRequestParams);
+
+			//git repo remote set to GitHub repo
+			GetRepoInfoResponse repoInfo = gitHubApiClient.getRepoInfo(textField.getText(),nameField.getText());
+			String url = repoInfo.getUrl();
+			String gitRemoteAdd = gitSubprocessClient.gitRemoteAdd("origin",url + ".git");
+
+			//initial commit pushed to GitHub
+			String push = gitSubprocessClient.gitPush("master");
+            update.setText("Link to your new github repo");
+            link.setText(url);
+			link.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					try{
+						Desktop.getDesktop().browse(new URI(url));
+					} catch (IOException | URISyntaxException e1){
+						e1.printStackTrace();
+					}
+				}
+			});
+
+            }
+        });
+
     }//end main
 
-    public static String chooseFile() {
-        JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int returnvalue = jfc.showOpenDialog(null);
-        if(returnvalue == JFileChooser.APPROVE_OPTION){
-            File selectedFile = jfc.getSelectedFile();
-            return selectedFile.getAbsolutePath();
-        }
-        else{
-            return "";
-        }
-    }
     public static void startScreen(JFrame nextFrame) {
         JFrame startScreen = new JFrame("Start Screen");
         startScreen.setSize(1000,800);
@@ -269,7 +367,30 @@ public class start{
         });
         startPanel.add(nextButton);
 
-        ImageIcon background = new ImageIcon("C:\\Users\\cheff\\Downloads\\School_Downloads\\CSC109\\Challenge2\\GithubGUI\\picture1.png");
+        JLabel disclaimer = new JLabel("This application is a prototype and is not yet meant for commercial use");
+        disclaimer.setSize(700,200);
+        disclaimer.setLocation(500, 650);
+        startPanel.add(disclaimer);
+
+        ImageIcon logo1 = new ImageIcon("quinnipiac.jpg");
+        Image imglogo = logo1.getImage();
+        Image templogo = imglogo.getScaledInstance(100,100,Image.SCALE_SMOOTH);
+        logo1 = new ImageIcon(templogo);
+        JLabel logoLabel = new JLabel(logo1);
+        logoLabel.setLayout(null);
+        logoLabel.setBounds(10, 10, 100, 100);
+        startPanel.add(logoLabel);
+
+        ImageIcon logo2 = new ImageIcon("Microsoft-logo.jpg");
+        Image imglogo2 = logo2.getImage();
+        Image templogo2 = imglogo2.getScaledInstance(100,100,Image.SCALE_SMOOTH);
+        logo2 = new ImageIcon(templogo2);
+        JLabel logoLabel2 = new JLabel(logo2);
+        logoLabel2.setLayout(null);
+        logoLabel2.setBounds(120, 10, 100, 100);
+        startPanel.add(logoLabel2);
+
+        ImageIcon background = new ImageIcon("picture1.png");
         Image img = background.getImage();
         Image temp = img.getScaledInstance(1000,700,Image.SCALE_SMOOTH);
         background = new ImageIcon(temp);
